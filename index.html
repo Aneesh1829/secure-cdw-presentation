@@ -18,6 +18,7 @@
         <div class="nav-brand">CDW Security</div>
         <ul class="nav-links">
             <li><a href="#home">Home</a></li>
+            <li><a href="#demo" class="highlight-text">Live Demo</a></li>
             <li><a href="#problem">Problem</a></li>
             <li><a href="#solution">Solution</a></li>
             <li><a href="#architecture">Architecture</a></li>
@@ -36,7 +37,75 @@
                     <p><strong>Journal:</strong> IEEE Access (2024)</p>
                     <p class="highlight-text">Team: G28</p>
                 </div>
-                <a href="#problem" class="btn-primary">Explore Research</a>
+                <a href="#demo" class="btn-primary">Try Live Demo</a>
+            </div>
+        </section>
+
+        <section id="demo" class="section reveal">
+            <div class="container">
+                <h2 class="section-title glow-text">Interactive Search Simulator</h2>
+                <p class="section-desc">Experience the Hybrid Indexing & Encrypted Search mechanism in real-time.</p>
+                
+                <div class="demo-dashboard grid-2">
+                    <!-- Data Owner View -->
+                    <div class="card glass demo-panel">
+                        <h3>1. Data Owner (Cloud Storage)</h3>
+                        <div class="data-table-container">
+                            <table id="demo-table" class="demo-table">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Age Group</th>
+                                        <th>Diagnosis</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="demo-tbody">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <button id="btn-encrypt" class="btn-secondary mt-1">Encrypt & Generate Indexes</button>
+                    </div>
+
+                    <!-- Data User View -->
+                    <div class="card glass demo-panel border-purple">
+                        <h3>2. Data User (Query Execution)</h3>
+                        <div class="query-interface">
+                            <p class="text-sm mb-1">Enter a Boolean Query to search the encrypted data safely:</p>
+                            <div class="query-box">
+                                <select id="query-field-1" class="demo-input">
+                                    <option value="Age">Age Group</option>
+                                    <option value="Diagnosis">Diagnosis</option>
+                                </select>
+                                <select id="query-val-1" class="demo-input">
+                                    <option value="Adult">Adult</option>
+                                    <option value="Senior">Senior</option>
+                                </select>
+                                <select id="query-op" class="demo-input op-select">
+                                    <option value="AND">AND</option>
+                                    <option value="OR">OR</option>
+                                </select>
+                                <select id="query-field-2" class="demo-input">
+                                    <option value="Diagnosis">Diagnosis</option>
+                                    <option value="Age">Age Group</option>
+                                </select>
+                                <select id="query-val-2" class="demo-input">
+                                    <option value="Diabetes">Diabetes</option>
+                                    <option value="Hypertension">Hypertension</option>
+                                </select>
+                            </div>
+                            <button id="btn-search" class="btn-primary mt-1" disabled>Submit Secure Query</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Execution Pipeline Logs -->
+                <div id="execution-pipeline" class="execution-pipeline glass mt-2 hidden">
+                    <h3>3. Execution Pipeline (Proxy & Blockchain)</h3>
+                    <div id="log-container" class="log-container">
+                        <!-- Logs populated by JS -->
+                    </div>
+                </div>
             </div>
         </section>
 
