@@ -240,6 +240,7 @@ h1, h2, h3 {
 .action-bar {
     display: flex;
     justify-content: center;
+    gap: 1rem;
 }
 
 .btn {
@@ -268,6 +269,17 @@ h1, h2, h3 {
     background: #fff;
     transform: translateY(-2px);
     box-shadow: 0 5px 15px rgba(255,255,255,0.2);
+}
+
+.secondary-btn {
+    background: transparent;
+    color: var(--text-main);
+    border: 1px solid var(--border-subtle);
+}
+
+.secondary-btn:hover:not(:disabled) {
+    border-color: #fff;
+    transform: translateY(-2px);
 }
 
 #btn-encrypt {

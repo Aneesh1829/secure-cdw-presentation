@@ -7,21 +7,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- Data Model ---
-    const mockData = [
-        { id: 'REC-001', age: 'Adult', diagnosis: 'Diabetes' },
-        { id: 'REC-002', age: 'Senior', diagnosis: 'Hypertension' },
-        { id: 'REC-003', age: 'Adult', diagnosis: 'Hypertension' },
-        { id: 'REC-004', age: 'Senior', diagnosis: 'Diabetes' },
-        { id: 'REC-005', age: 'Child', diagnosis: 'Asthma' },
-        { id: 'REC-006', age: 'Adult', diagnosis: 'Asthma' }
-    ];
+    const generateMockData = (count) => {
+        const ages = ['Adult', 'Senior', 'Child', 'Teenager'];
+        const diagnoses = ['Diabetes', 'Hypertension', 'Asthma', 'Healthy', 'Anemia', 'Migraine'];
+        let data = [];
+        for(let i = 1; i <= count; i++) {
+            data.push({
+                id: 'REC-' + i.toString().padStart(3, '0'),
+                age: ages[Math.floor(Math.random() * ages.length)],
+                diagnosis: diagnoses[Math.floor(Math.random() * diagnoses.length)]
+            });
+        }
+        return data;
+    };
+    
+    // Simulate 50 records
+    const mockData = generateMockData(50);
 
     let isEncrypted = false;
+    let isShowingPlaintext = true;
     let encryptedData = [];
 
     // --- UI Elements ---
     const dataTbody = document.getElementById('data-tbody');
     const btnEncrypt = document.getElementById('btn-encrypt');
+    const btnToggleData = document.getElementById('btn-toggle-data');
     const panelQuery = document.getElementById('panel-query');
     const btnSearch = document.getElementById('btn-search');
     const terminalBody = document.getElementById('log-container');
@@ -117,9 +127,14 @@ document.addEventListener('DOMContentLoaded', () => {
         
         await sleep(1000);
         isEncrypted = true;
+        isShowingPlaintext = false;
         renderData(dataTbody, encryptedData, true);
         
         btnEncrypt.innerHTML = '<span class="icon">✅</span> Data Secured & Indexed';
+        btnEncrypt.disabled = true; // completely disable encrypt once done
+        
+        btnToggleData.classList.remove('hidden');
+        
         statusStorage.innerText = 'Status: Encrypted';
         statusStorage.style.color = 'var(--accent-cyan)';
         
@@ -130,6 +145,24 @@ document.addEventListener('DOMContentLoaded', () => {
         statusQuery.style.color = 'var(--accent-purple)';
         
         addLog('Encryption & Indexing complete. Ready for secure queries.', 'success');
+    });
+
+    // --- Toggle Plaintext/Encrypted Action ---
+    btnToggleData.addEventListener('click', () => {
+        if (!isEncrypted) return;
+        
+        isShowingPlaintext = !isShowingPlaintext;
+        if (isShowingPlaintext) {
+            renderData(dataTbody, mockData, false);
+            btnToggleData.innerHTML = '<span class="icon">🔒</span> View Encrypted State';
+            statusStorage.innerText = 'Status: Plaintext Mode (Viewer)';
+            statusStorage.style.color = 'var(--text-muted)';
+        } else {
+            renderData(dataTbody, encryptedData, true);
+            btnToggleData.innerHTML = '<span class="icon">👁️</span> View Original Plaintext';
+            statusStorage.innerText = 'Status: Encrypted';
+            statusStorage.style.color = 'var(--accent-cyan)';
+        }
     });
 
     // --- Search Logic & Bitmap Computation ---
