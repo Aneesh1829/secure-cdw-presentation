@@ -31,12 +31,39 @@
             <div class="panel-header">
                 <h2>1. Cloud Data Warehouse Storage</h2>
                 <div class="header-actions">
-                    <span class="badge" id="record-count">Records: 50</span>
+                    <span class="badge" id="record-count">Showing: 50 / 38000</span>
                     <span class="status-indicator" id="status-storage">Status: Plaintext</span>
                 </div>
             </div>
             <div class="panel-content">
-                <p class="desc">Simulated Medical Records dataset.</p>
+                <p class="desc">Simulated medical records dataset (evaluation profile inspired by the research deck: 38,000 records, multi-dimensional query workflow).</p>
+                <div class="dataset-metadata" id="dataset-metadata">
+                    <div class="meta-card">
+                        <h4>Total Simulated Records</h4>
+                        <p id="meta-total-records">38,000</p>
+                    </div>
+                    <div class="meta-card">
+                        <h4>Displayed Sample</h4>
+                        <p id="meta-sample-size">50</p>
+                    </div>
+                    <div class="meta-card">
+                        <h4>Distinct Diagnoses</h4>
+                        <p id="meta-distinct-diagnosis">0</p>
+                    </div>
+                    <div class="meta-card">
+                        <h4>Adult + Senior Share</h4>
+                        <p id="meta-adult-senior-share">0%</p>
+                    </div>
+                </div>
+                <div class="dataset-tools">
+                    <label for="dataset-filter">Filter by diagnosis</label>
+                    <select id="dataset-filter" class="input-dark">
+                        <option value="ALL">All Diagnoses</option>
+                    </select>
+                    <button id="btn-export-csv" class="btn secondary-btn small-btn">
+                        <span class="icon">⬇️</span> Export Current View (CSV)
+                    </button>
+                </div>
                 <div class="table-container">
                     <table class="data-table">
                         <thead>

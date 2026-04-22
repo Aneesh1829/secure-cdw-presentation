@@ -21,8 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return data;
     };
     
-    // Simulate 50 records
-    const mockData = generateMockData(50);
+    const TOTAL_DATASET_SIZE = 38000;
+    const SAMPLE_SIZE = 50;
+    // Keep an interactive sample visible while reflecting research-scale metadata.
+    const mockData = generateMockData(SAMPLE_SIZE);
 
     let isEncrypted = false;
     let isShowingPlaintext = true;
@@ -37,11 +39,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const terminalBody = document.getElementById('log-container');
     const resultContainer = document.getElementById('result-container');
     const resultTbody = document.getElementById('result-tbody');
+    const datasetFilter = document.getElementById('dataset-filter');
+    const btnExportCsv = document.getElementById('btn-export-csv');
+    const recordCount = document.getElementById('record-count');
+    const metaTotalRecords = document.getElementById('meta-total-records');
+    const metaSampleSize = document.getElementById('meta-sample-size');
+    const metaDistinctDiagnosis = document.getElementById('meta-distinct-diagnosis');
+    const metaAdultSeniorShare = document.getElementById('meta-adult-senior-share');
     
     // Status Indicators
     const statusStorage = document.getElementById('status-storage');
     const statusQuery = document.getElementById('status-query');
     const statusPipeline = document.getElementById('status-pipeline');
+    let activeDataView = [...mockData];
 
     // --- Helper Functions ---
     const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
@@ -78,8 +88,66 @@ document.addEventListener('DOMContentLoaded', () => {
         terminalBody.scrollTop = terminalBody.scrollHeight;
     };
 
+    const updateDatasetStats = (dataList) => {
+        const distinctDiagnosisCount = new Set(dataList.map((item) => item.diagnosis)).size;
+        const adultSeniorCount = dataList.filter((item) => item.age === 'Adult' || item.age === 'Senior').length;
+        const adultSeniorShare = dataList.length === 0 ? 0 : Math.round((adultSeniorCount / dataList.length) * 100);
+
+        recordCount.innerText = `Showing: ${dataList.length} / ${TOTAL_DATASET_SIZE}`;
+        metaTotalRecords.innerText = TOTAL_DATASET_SIZE.toLocaleString();
+        metaSampleSize.innerText = SAMPLE_SIZE.toString();
+        metaDistinctDiagnosis.innerText = distinctDiagnosisCount.toString();
+        metaAdultSeniorShare.innerText = `${adultSeniorShare}%`;
+    };
+
+    const populateDatasetFilter = () => {
+        const uniqueDiagnoses = [...new Set(mockData.map((item) => item.diagnosis))].sort();
+        uniqueDiagnoses.forEach((diagnosis) => {
+            const opt = document.createElement('option');
+            opt.value = diagnosis;
+            opt.innerText = diagnosis;
+            datasetFilter.appendChild(opt);
+        });
+    };
+
+    const applyDatasetFilter = () => {
+        const filterValue = datasetFilter.value;
+        const sourceData = (isEncrypted && !isShowingPlaintext) ? encryptedData : mockData;
+        if (filterValue === 'ALL') {
+            activeDataView = [...sourceData];
+        } else {
+            activeDataView = sourceData.filter((item) => (item.originalDiagnosis || item.diagnosis) === filterValue);
+        }
+        renderData(dataTbody, activeDataView, isEncrypted && !isShowingPlaintext);
+        updateDatasetStats(activeDataView);
+    };
+
+    const exportCurrentViewAsCsv = () => {
+        if (activeDataView.length === 0) {
+            addLog('CSV export skipped: current dataset view is empty.', 'error');
+            return;
+        }
+        const rows = [
+            ['Record ID', 'Age Group', 'Diagnosis'],
+            ...activeDataView.map((row) => [row.id, row.age, row.diagnosis])
+        ];
+        const csvString = rows.map((row) => row.map((cell) => `"${cell}"`).join(',')).join('\n');
+        const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `simulated-medical-records-${Date.now()}.csv`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        addLog(`Exported ${activeDataView.length} records to CSV from current view.`, 'success');
+    };
+
     // --- Initialization ---
     renderData(dataTbody, mockData, false);
+    populateDatasetFilter();
+    updateDatasetStats(mockData);
 
     // --- Dynamic Dropdowns Logic ---
     const field1 = document.getElementById('q-field-1');
@@ -101,6 +169,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     field1.addEventListener('change', () => populateValues(field1, val1));
     field2.addEventListener('change', () => populateValues(field2, val2));
+    datasetFilter.addEventListener('change', applyDatasetFilter);
+    btnExportCsv.addEventListener('click', exportCurrentViewAsCsv);
     
     // Initialize default dropdown options
     populateValues(field1, val1);
@@ -119,7 +189,8 @@ document.addEventListener('DOMContentLoaded', () => {
         encryptedData = mockData.map(row => ({
             id: 'E_ID_' + btoa(row.id).substring(0, 8),
             age: '0x' + Array.from(row.age).map(c => c.charCodeAt(0).toString(16)).join(''),
-            diagnosis: '0x' + Array.from(row.diagnosis).map(c => c.charCodeAt(0).toString(16)).join('')
+            diagnosis: '0x' + Array.from(row.diagnosis).map(c => c.charCodeAt(0).toString(16)).join(''),
+            originalDiagnosis: row.diagnosis
         }));
 
         await sleep(800);
@@ -128,7 +199,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await sleep(1000);
         isEncrypted = true;
         isShowingPlaintext = false;
-        renderData(dataTbody, encryptedData, true);
+        applyDatasetFilter();
         
         btnEncrypt.innerHTML = '<span class="icon">✅</span> Data Secured & Indexed';
         btnEncrypt.disabled = true; // completely disable encrypt once done
@@ -153,12 +224,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
         isShowingPlaintext = !isShowingPlaintext;
         if (isShowingPlaintext) {
-            renderData(dataTbody, mockData, false);
+            applyDatasetFilter();
             btnToggleData.innerHTML = '<span class="icon">🔒</span> View Encrypted State';
             statusStorage.innerText = 'Status: Plaintext Mode (Viewer)';
             statusStorage.style.color = 'var(--text-muted)';
         } else {
-            renderData(dataTbody, encryptedData, true);
+            applyDatasetFilter();
             btnToggleData.innerHTML = '<span class="icon">👁️</span> View Original Plaintext';
             statusStorage.innerText = 'Status: Encrypted';
             statusStorage.style.color = 'var(--accent-cyan)';
