@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Cloud Data Warehouse Search</title>
+    <meta name="description" content="Presentation on Achieving Secure, Verifiable, and Efficient Boolean Keyword Searchable Encryption for Cloud Data Warehouse">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&family=Outfit:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+    <div class="bg-mesh"></div>
+    <div class="cursor-glow" id="cursor-glow"></div>
+
+    <nav class="navbar">
+        <div class="nav-brand">CDW Security</div>
+        <ul class="nav-links">
+            <li><a href="#home">Home</a></li>
+            <li><a href="#problem">Problem</a></li>
+            <li><a href="#solution">Solution</a></li>
+            <li><a href="#architecture">Architecture</a></li>
+            <li><a href="#results">Results</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="home" class="hero section reveal">
+            <div class="hero-content">
+                <span class="badge">Research Paper Presentation</span>
+                <h1 class="glitch" data-text="Secure, Verifiable, and Efficient Boolean Keyword Searchable Encryption">Secure, Verifiable, and Efficient Boolean Keyword Searchable Encryption</h1>
+                <h2 class="subtitle">for Cloud Data Warehouse</h2>
+                <div class="authors">
+                    <p><strong>Authors:</strong> Somchart Fugkeaw, Lyhour Hak, Thanaruk Theeramunkong</p>
+                    <p><strong>Journal:</strong> IEEE Access (2024)</p>
+                    <p class="highlight-text">Team: G28</p>
+                </div>
+                <a href="#problem" class="btn-primary">Explore Research</a>
+            </div>
+        </section>
+
+        <section id="problem" class="section reveal">
+            <div class="container">
+                <h2 class="section-title">The Challenge</h2>
+                <div class="grid-2">
+                    <div class="card glass">
+                        <div class="card-icon">🔒</div>
+                        <h3>The Encryption Dilemma</h3>
+                        <p>Organizations must encrypt sensitive data (facts + dimensions) before outsourcing to the cloud. However, analytical tools cannot directly query encrypted data, destroying usability.</p>
+                    </div>
+                    <div class="card glass">
+                        <div class="card-icon">❌</div>
+                        <h3>Existing Limitations</h3>
+                        <ul class="custom-list">
+                            <li>No Boolean Query Support (AND, OR, NOT)</li>
+                            <li>Inefficient for multi-dimensional data cubes</li>
+                            <li>Lack of result verification and integrity</li>
+                            <li>Limited role-based access control</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="solution" class="section reveal">
+            <div class="container">
+                <h2 class="section-title">Proposed Solution</h2>
+                <p class="section-desc">A hybrid approach combining advanced encryption, multi-level indexing, and blockchain verification.</p>
+                <div class="grid-4">
+                    <div class="feature-card glass hover-up">
+                        <h4>PHE (Paillier Encryption)</h4>
+                        <p>Secures data while enabling computation on encrypted values.</p>
+                    </div>
+                    <div class="feature-card glass hover-up">
+                        <h4>B+Tree</h4>
+                        <p>Narrows search space efficiently for range and hierarchical queries.</p>
+                    </div>
+                    <div class="feature-card glass hover-up">
+                        <h4>Inverted Index</h4>
+                        <p>Enables lightning-fast keyword matching across dimensions.</p>
+                    </div>
+                    <div class="feature-card glass hover-up">
+                        <h4>Bitmap Index</h4>
+                        <p>Executes complex Boolean operations (AND, OR) efficiently.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="architecture" class="section reveal">
+            <div class="container">
+                <h2 class="section-title">System Architecture</h2>
+                <div class="arch-container glass">
+                    <div class="arch-step">
+                        <div class="step-num">01</div>
+                        <h3>Data Owner</h3>
+                        <p>Encrypts multi-dimensional data and uploads to the cloud.</p>
+                    </div>
+                    <div class="arch-step">
+                        <div class="step-num">02</div>
+                        <h3>Data User</h3>
+                        <p>Submits a Boolean query securely via an encrypted trapdoor.</p>
+                    </div>
+                    <div class="arch-step">
+                        <div class="step-num">03</div>
+                        <h3>Proxy Server</h3>
+                        <p>Executes the search using the Hybrid Indexing approach without decrypting.</p>
+                    </div>
+                    <div class="arch-step">
+                        <div class="step-num">04</div>
+                        <h3>Blockchain</h3>
+                        <p>Verifies query validity, user identity, and results integrity.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="results" class="section reveal">
+            <div class="container">
+                <h2 class="section-title">Security & Performance</h2>
+                <div class="grid-2">
+                    <div class="card glass border-cyan">
+                        <h3>🛡️ Security Analysis</h3>
+                        <ul class="custom-list">
+                            <li><strong>Confidentiality:</strong> Data remains encrypted.</li>
+                            <li><strong>Search Privacy:</strong> Query hidden using trapdoor.</li>
+                            <li><strong>Result Integrity:</strong> Verified via Blockchain (SHA-256 hashing).</li>
+                            <li><strong>Access Control:</strong> Smart contract role restrictions.</li>
+                        </ul>
+                    </div>
+                    <div class="card glass border-purple">
+                        <h3>⚡ Performance Results</h3>
+                        <ul class="custom-list">
+                            <li>Lowest search time compared to existing methods.</li>
+                            <li>Search time remains almost constant as data scales up.</li>
+                            <li>Handles moderate concurrency extremely efficiently.</li>
+                            <li>Evaluated on ~38,000 multi-dimensional records.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="conclusion" class="section reveal text-center">
+            <div class="container">
+                <h2 class="section-title glow-text">Conclusion</h2>
+                <blockquote class="conclusion-quote glass">
+                    "The proposed system successfully balances security, efficiency, and functionality in cloud data warehouse environments."
+                </blockquote>
+                <p>Enables complex Boolean queries on encrypted data without compromising privacy, while adding trust via Blockchain.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 G28 Research Team Presentation Showcase. Powered by Advanced Agentic Design.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
