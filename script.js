@@ -71,6 +71,31 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- Initialization ---
     renderData(dataTbody, mockData, false);
 
+    // --- Dynamic Dropdowns Logic ---
+    const field1 = document.getElementById('q-field-1');
+    const val1 = document.getElementById('q-val-1');
+    const field2 = document.getElementById('q-field-2');
+    const val2 = document.getElementById('q-val-2');
+
+    const populateValues = (fieldSelect, valSelect) => {
+        const field = fieldSelect.value;
+        valSelect.innerHTML = '';
+        const uniqueValues = [...new Set(mockData.map(item => item[field]))];
+        uniqueValues.forEach(val => {
+            const opt = document.createElement('option');
+            opt.value = val;
+            opt.innerText = val;
+            valSelect.appendChild(opt);
+        });
+    };
+
+    field1.addEventListener('change', () => populateValues(field1, val1));
+    field2.addEventListener('change', () => populateValues(field2, val2));
+    
+    // Initialize default dropdown options
+    populateValues(field1, val1);
+    populateValues(field2, val2);
+
     // --- Encrypt Action ---
     btnEncrypt.addEventListener('click', async () => {
         if(isEncrypted) return;
@@ -114,19 +139,22 @@ document.addEventListener('DOMContentLoaded', () => {
         statusPipeline.innerText = 'Status: Executing Query';
         statusPipeline.style.color = 'var(--accent-green)';
         
+        // Auto-scroll to pipeline on smaller screens
+        document.getElementById('panel-pipeline').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
         // Read Query Inputs
-        const field1 = document.getElementById('q-field-1').value; // 'age' or 'diagnosis'
-        const val1 = document.getElementById('q-val-1').value;
+        const field1Val = document.getElementById('q-field-1').value; // 'age' or 'diagnosis'
+        const targetVal1 = document.getElementById('q-val-1').value;
         const op = document.getElementById('q-op').value; // 'AND' or 'OR'
-        const field2 = document.getElementById('q-field-2').value;
-        const val2 = document.getElementById('q-val-2').value;
+        const field2Val = document.getElementById('q-field-2').value;
+        const targetVal2 = document.getElementById('q-val-2').value;
 
         addLog(`--- NEW QUERY REQUEST ---`, 'step');
-        addLog(`Constructing Boolean Query: (${field1} = ${val1}) ${op} (${field2} = ${val2})`, 'info');
+        addLog(`Constructing Boolean Query: (${field1Val} = ${targetVal1}) ${op} (${field2Val} = ${targetVal2})`, 'info');
         
         await sleep(800);
         // Trapdoor Generation
-        const trapdoorHash = 'T_' + Array.from(val1+val2).map(c => c.charCodeAt(0).toString(16)).join('');
+        const trapdoorHash = 'T_' + Array.from(targetVal1+targetVal2).map(c => c.charCodeAt(0).toString(16)).join('');
         addLog(`Generating Encrypted Trapdoor: <span class="log-hash">${trapdoorHash}</span>`, 'info');
         
         await sleep(800);
@@ -142,8 +170,8 @@ document.addEventListener('DOMContentLoaded', () => {
             return mockData.map(record => record[field] === targetVal ? 1 : 0);
         };
 
-        const bm1 = generateBitmap(field1, val1);
-        const bm2 = generateBitmap(field2, val2);
+        const bm1 = generateBitmap(field1Val, targetVal1);
+        const bm2 = generateBitmap(field2Val, targetVal2);
 
         await sleep(1000);
         addLog(`[B+Tree] Narrowing multi-dimensional space bounds.`, 'info');
@@ -152,8 +180,8 @@ document.addEventListener('DOMContentLoaded', () => {
         
         await sleep(800);
         addLog(`[Bitmap Index] Executing Secure Boolean Math on Proxy:`, 'step');
-        addLog(`Bitmap 1 (${val1}): [${bm1.join(', ')}]`, 'log-bit');
-        addLog(`Bitmap 2 (${val2}): [${bm2.join(', ')}]`, 'log-bit');
+        addLog(`Bitmap 1 (${targetVal1}): [${bm1.join(', ')}]`, 'log-bit');
+        addLog(`Bitmap 2 (${targetVal2}): [${bm2.join(', ')}]`, 'log-bit');
         addLog(`Operator: ${op}`, 'log-bit');
 
         let resultBm = [];
