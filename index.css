@@ -121,6 +121,12 @@ h1, h2, h3 {
     border-bottom: 1px solid var(--border-subtle);
 }
 
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
 .panel-header h2 {
     font-size: 1.3rem;
     color: #fff;
@@ -150,7 +156,8 @@ h1, h2, h3 {
     background: #000;
     border-radius: 8px;
     border: 1px solid var(--border-subtle);
-    overflow: hidden;
+    overflow-y: auto;
+    max-height: 400px;
     margin-bottom: 1.5rem;
 }
 
